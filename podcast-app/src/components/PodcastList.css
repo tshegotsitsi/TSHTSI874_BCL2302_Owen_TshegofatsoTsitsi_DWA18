@@ -1,7 +1,8 @@
-/* src/components/PodcastList.css */
+
 .podcast-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* Add some space between podcast items */
-  }
-  
+  background-color: rgb(47, 41, 41);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
