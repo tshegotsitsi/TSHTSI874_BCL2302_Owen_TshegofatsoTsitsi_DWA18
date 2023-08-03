@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const AudioPlayer = ({ episode, onPlaybackChange }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -8,7 +8,10 @@ const AudioPlayer = ({ episode, onPlaybackChange }) => {
   useEffect(() => {
     // Handle play/pause when the isPlaying state changes
     if (isPlaying) {
-      audioRef.current.play();
+      audioRef.current.play().catch((error) => {
+        // Auto-play may be blocked by the browser. You can handle this error if needed.
+        console.error('Error playing audio:', error);
+      });
     } else {
       audioRef.current.pause();
     }
@@ -20,13 +23,18 @@ const AudioPlayer = ({ episode, onPlaybackChange }) => {
       setCurrentTime(audioRef.current.currentTime);
     };
 
-    audioRef.current.addEventListener('timeupdate', updateTime);
+    // Attach the timeupdate event listener when the audio is loaded
+    if (audioRef.current) {
+      audioRef.current.addEventListener('timeupdate', updateTime);
+    }
 
     // Cleanup event listener
     return () => {
-      audioRef.current.removeEventListener('timeupdate', updateTime);
+      if (audioRef.current) {
+        audioRef.current.removeEventListener('timeupdate', updateTime);
+      }
     };
-  }, []);
+  }, [episode]);
 
   const handlePlayback = () => {
     setIsPlaying((prev) => !prev);
@@ -50,7 +58,7 @@ const AudioPlayer = ({ episode, onPlaybackChange }) => {
         <input
           type="range"
           min={0}
-          max={audioRef.current && audioRef.current.duration}
+          max={audioRef.current ? audioRef.current.duration : 0}
           step={0.1}
           value={currentTime}
           onChange={handleTimeSeek}
