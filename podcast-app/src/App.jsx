@@ -7,6 +7,7 @@ import PodcastList from './components/PodcastList';
 const App = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [podcastDetails, setPodcastDetails] = useState([]);
 
   useEffect(() => {
     fetch('https://podcast-api.netlify.app/shows')
@@ -21,7 +22,37 @@ const App = () => {
       });
   }, []);
 
-  console.log(podcasts); // Log the podcasts state to the console
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const showIds = podcasts.map((pod) => pod.id);
+        const detailsPromises = showIds.map((id) =>
+          fetch(`https://podcast-api.netlify.app/id/${id}`).then((response) => response.json())
+        );
+        const detailsData = await Promise.all(detailsPromises);
+        setPodcastDetails(detailsData);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchData();
+  }, [podcasts]);
+
+  // Separate function to log the episodes for each podcast
+  const logEpisodes = (podcast) => {
+    podcast.seasons.forEach((season) => {
+      season.episodes.forEach((episode) => {
+        console.log(episode);
+      });
+    });
+  };
+
+  // Log the podcasts state to the console
+  console.log(podcasts);
+  
+
+// Log the podcasts state to the console
 
   return (
     <div>
@@ -31,7 +62,8 @@ const App = () => {
         <p>Loading...</p> // Show a loading message while fetching data
       ) : (
         <>
-          <PodcastList podcasts={podcasts} />
+          <PodcastList podcasts={podcasts} details={podcastDetails} />
+          {podcastDetails.map((podcast) => logEpisodes(podcast))} {/* Call the function here */}
          
         </>
       )}

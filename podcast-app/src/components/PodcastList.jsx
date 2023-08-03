@@ -16,7 +16,7 @@ const PodcastList = ({ podcasts }) => {
 PodcastList.propTypes = {
   podcasts: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
+      id: PropTypes.number,
       image: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
