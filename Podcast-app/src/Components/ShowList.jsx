@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { genres } from './Pages/genres';
 
 const ShowList = (props) => {
+
+  const {shows} = props
   const [showAll, setShowAll] = useState(false);
+  
+  
 
   // Toggle the state to show all or limited shows
   const toggleShowAll = () => {
     setShowAll((prevShowAll) => !prevShowAll);
   };
 
+ 
   // Determine the list of shows to display based on 'showAll'
   const showsToDisplay = showAll ? props.shows : props.shows.slice(0, 8);
+  
 
   // Check if there are more shows to display
   const hasMoreShows = props.shows.length > showsToDisplay.length;
@@ -35,6 +42,19 @@ const ShowList = (props) => {
                   Genres: {show.genres.join(', ')}
                 </li>
               </ul>
+              {shows.map(show => (show.genres).map(genre => {
+                 const ttt = genre
+
+                 genres.map(genMap => {
+
+                  const hhh = genMap
+
+                 if(hhh.code === ttt){
+                console.log(hhh.name)
+                 }
+                 })
+  
+                 })) }
             </div>
           </div>
         ))}
