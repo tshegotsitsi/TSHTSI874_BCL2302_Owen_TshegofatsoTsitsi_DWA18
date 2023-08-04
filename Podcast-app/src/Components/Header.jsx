@@ -1,21 +1,30 @@
-import{ useState } from 'react';
+import { useState } from 'react';
 
+/**
+ * Header component for the website header section.
+ * @returns {JSX.Element} The JSX element representing the header.
+ */
 export default function Header() {
+  // State to handle mic spinning animation
   const [micSpinning, setMicSpinning] = useState(false);
 
+  // Function to handle mouse hover on the microphone image
   const handleMicHover = () => {
     setMicSpinning(true);
   };
 
+  // Function to handle mouse leaving the microphone image
   const handleMicLeave = () => {
     setMicSpinning(false);
   };
 
+  // Style object for the microphone image with rotation transition
   const micImgStyle = {
     transition: 'transform 0.3s ease',
     transform: micSpinning ? 'rotate(360deg)' : 'rotate(0deg)',
   };
 
+  // Style object for the heading text
   const headingStyle = {
     color: '#fff',
     paddingTop: '5rem',

@@ -1,33 +1,28 @@
-import About from "./Components/Pages/About";
-import Home from "./Components/Pages/Home";
-import Podcasts from "./Components/Pages/Podcasts";
-import ShowDetails from "./Components/Pages/ShowDetails";
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+// Import the page components
+import About from './Components/Pages/About';
+import Home from './Components/Pages/Home';
+import Podcasts from './Components/Pages/Podcasts';
+import ShowDetails from './Components/Pages/ShowDetails';
 
 function App() {
   return (
     <BrowserRouter>
+      {/* Header */}
       <header className="bg-dark">
         <nav className="nav nav-pills flex-row P-2">
-          <Link
-            to="/"
-            className="flex-sm-fill text-sm-center nav-link  text-light"
-            aria-current="page"
-            href="#"
-          >
+          {/* Home Link */}
+          <Link to="/" className="flex-sm-fill text-sm-center nav-link text-light" aria-current="page">
             Home
           </Link>
-          <a
-            className="flex-sm-fill text-sm-center nav-link dropdown-toggle text-light"
-            data-bs-toggle="dropdown"
-            href="#"
-            role="button"
-            aria-expanded="false"
-          >
+
+          {/* Genres Dropdown */}
+          <a className="flex-sm-fill text-sm-center nav-link dropdown-toggle text-light" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
             Genres
           </a>
           <ul className="dropdown-menu">
+            {/* List of Genre Links */}
             <li>
               <a className="dropdown-item" href="#">
                 Personal Growth
@@ -35,7 +30,7 @@ function App() {
             </li>
             <li>
               <a className="dropdown-item" href="#">
-                True Crime& Investigative Journalism
+                True Crime & Investigative Journalism
               </a>
             </li>
             <li>
@@ -74,27 +69,31 @@ function App() {
               </a>
             </li>
           </ul>
-          <Link
-            to="/podcasts"
-            className="flex-sm-fill text-sm-center nav-link text-light"
-            href="#"
-          >
+
+          {/* Podcasts Link */}
+          <Link to="/podcasts" className="flex-sm-fill text-sm-center nav-link text-light" href="#">
             Podcasts
           </Link>
-          <Link
-            to="/about"
-            className="flex-sm-fill text-sm-center nav-link text-light"
-            href="#"
-          >
+
+          {/* About Link */}
+          <Link to="/about" className="flex-sm-fill text-sm-center nav-link text-light" href="#">
             About
           </Link>
         </nav>
       </header>
 
+      {/* Routes */}
       <Routes>
+        {/* Home Page */}
         <Route path="/" element={<Home />} />
+
+        {/* About Page */}
         <Route path="/about" element={<About />} />
+
+        {/* Podcasts Page */}
         <Route path="/podcasts" element={<Podcasts />} />
+
+        {/* ShowDetails Page */}
         <Route path="/podcasts/:id" element={<ShowDetails />} />
       </Routes>
     </BrowserRouter>

@@ -1,64 +1,59 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
-/**
- * ShowDetails component represents the page that displays details of a specific podcast.
- * It fetches the podcast details from the API based on the provided ID in the URL parameters.
- */
-function ShowDetails() {
-  // State to store the podcast data and loading status
-  const [podcast, setPodcast] = useState(null);
+const Seasons = () => {
+  const { id } = useParams();
+  const [seasons, setSeasons] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Get the podcast ID from the URL parameters using react-router-dom's useParams hook
-  const params = useParams();
-
-  // Fetch the podcast details from the API when the component mounts or the podcast ID changes
   useEffect(() => {
-    fetch(`https://podcast-api.netlify.app/id/${params.id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setPodcast(data);
+    axios
+      .get(`https://podcast-api.netlify.app/id/${id}`)
+      .then((response) => {
+        setSeasons(response.data.seasons);
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
+        console.error('Error fetching season data:', error);
         setLoading(false);
       });
-  }, [params.id]);
+  }, [id]);
 
-  // Debug information
-  console.log('params.id:', params.id);
-  console.log('podcast:', podcast);
-
-  // Render loading message while waiting for API response
   if (loading) {
-    return <h2>Loading...</h2>;
+    return <p>Loading...</p>;
   }
 
-  // Render the podcast details if available, or a message if the podcast is not found
   return (
-    <div className="container p-3 m-0">
-      <div className="row">
-        {podcast ? (
-          <div key={podcast.id} className="col-md-3 mb-4 mx-auto ">
-            <div className="card" style={{ width: '35rem' }}>
-              <img src={podcast.image} alt={podcast.title} className="card-img-top" />
-              <div className="card-body">
-                <h5 className="card-title">{podcast.title}</h5>
-                {/* Display a truncated description if it exceeds 100 characters */}
-                <p className="card-text">
-                  {podcast.description.length > 100 ? podcast.description.slice(0, 100) + '...' : podcast.description}
-                </p>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <h2>Podcast not found.</h2>
-        )}
-      </div>
+    <div className="seasons-container">
+      <h2>Seasons</h2>
+      <ul>
+        {seasons.map((season) => (
+          <li key={season.id}>
+            <h3>{season.title}</h3>
+            <img src={season.image} className="season-image" alt={season.title} />
+            {/* Render episodes if season.episodes is an array */}
+            {Array.isArray(season.episodes) ? (
+              <ul>
+                {season.episodes.map((episode, episodeIndex) => (
+                  <li key={episodeIndex}>
+                    <h4>{episode.title}</h4>
+                    <p>{episode.description}</p>
+                    <audio controls>
+                      <source src={episode.file} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No episodes found.</p>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
-export default ShowDetails;
+export default Seasons;

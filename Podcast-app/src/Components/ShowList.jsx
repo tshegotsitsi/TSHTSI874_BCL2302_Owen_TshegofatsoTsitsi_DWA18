@@ -4,11 +4,15 @@ import PropTypes from 'prop-types';
 const ShowList = (props) => {
   const [showAll, setShowAll] = useState(false);
 
+  // Toggle the state to show all or limited shows
   const toggleShowAll = () => {
     setShowAll((prevShowAll) => !prevShowAll);
   };
 
+  // Determine the list of shows to display based on 'showAll'
   const showsToDisplay = showAll ? props.shows : props.shows.slice(0, 8);
+
+  // Check if there are more shows to display
   const hasMoreShows = props.shows.length > showsToDisplay.length;
 
   return (
@@ -33,9 +37,9 @@ const ShowList = (props) => {
               </ul>
             </div>
           </div>
-      
         ))}
       </div>
+      {/* Show the "Show More" button if there are more shows */}
       {hasMoreShows && props.shows.length > 8 && (
         <div className="d-grid mb-3">
           <button className="btn btn-dark mt-3" type="button" onClick={toggleShowAll}>
