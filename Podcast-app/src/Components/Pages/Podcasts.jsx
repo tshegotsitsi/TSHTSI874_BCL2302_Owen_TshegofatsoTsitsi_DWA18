@@ -2,17 +2,27 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
+/**
+ * Podcasts component represents the page that displays all the podcasts.
+ * It fetches the list of podcasts from the API and provides sorting and searching functionality.
+ * Users can mark podcasts as favorites, and the favorite list is persisted in local storage.
+ */
 const Podcasts = () => {
+  // State to store the list of favorite podcast IDs
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem('favorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
 
+  // State to store the list of podcasts and loading status
   const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // State to handle sorting and filtering
   const [filter, setFilter] = useState('A-Z');
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Fetch the list of podcasts from the API when the component mounts
   useEffect(() => {
     fetch('https://podcast-api.netlify.app/shows')
       .then((response) => response.json())
@@ -21,15 +31,17 @@ const Podcasts = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching shows:', error);
+        console.error('Error fetching podcasts:', error);
         setLoading(false);
       });
   }, []);
 
+  // Function to handle changes in sorting and filtering
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
   };
 
+  // Function to sort the podcasts based on the selected filter
   const sortShows = (a, b) => {
     if (filter === 'A-Z') {
       return a.title.localeCompare(b.title);
@@ -43,6 +55,7 @@ const Podcasts = () => {
     return 0;
   };
 
+  // Function to toggle the favorite status of a podcast
   const toggleFavorite = (id) => {
     if (favorites.includes(id)) {
       setFavorites(favorites.filter((favId) => favId !== id));
@@ -51,16 +64,15 @@ const Podcasts = () => {
     }
   };
 
+  // Function to check if a podcast is marked as a favorite
   const isFavorite = (id) => favorites.includes(id);
 
+  // Save the list of favorite podcast IDs to local storage when it changes
   useEffect(() => {
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
+  // Function to handle search and filter the podcasts based on the search term
   const handleSearch = (e) => {
     e.preventDefault();
     const filteredShows = shows.filter((show) =>
@@ -69,6 +81,19 @@ const Podcasts = () => {
     setShows(filteredShows);
   };
 
+  // Function to format the date to a readable format
+  function formatDate(dateString) {
+    const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, options);
+  }
+
+  // Render loading message while waiting for API response
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Render the podcasts page with the list of podcasts and sorting/searching functionality
   return (
     <div className="container">
       <h2>All Shows</h2>
@@ -130,11 +155,5 @@ const Podcasts = () => {
     </div>
   );
 };
-
-function formatDate(dateString) {
-  const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
-  const date = new Date(dateString);
-  return date.toLocaleDateString(undefined, options);
-}
 
 export default Podcasts;

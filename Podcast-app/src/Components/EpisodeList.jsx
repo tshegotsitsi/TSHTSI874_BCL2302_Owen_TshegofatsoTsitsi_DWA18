@@ -1,5 +1,12 @@
 import PropTypes from 'prop-types';
 
+/**
+ * EpisodeList component renders a list of podcast episodes.
+ *
+ * @param {Object} props - The props for the component.
+ * @param {Object[]} props.episodes - An array of episode objects with id and title properties.
+ * @param {Function} props.onEpisodeSelect - The callback function to handle when an episode is selected.
+ */
 const EpisodeList = ({ episodes, onEpisodeSelect }) => {
   return (
     <div>
@@ -17,6 +24,7 @@ const EpisodeList = ({ episodes, onEpisodeSelect }) => {
   );
 };
 
+// PropTypes for type checking and validation
 EpisodeList.propTypes = {
   episodes: PropTypes.arrayOf(
     PropTypes.shape({

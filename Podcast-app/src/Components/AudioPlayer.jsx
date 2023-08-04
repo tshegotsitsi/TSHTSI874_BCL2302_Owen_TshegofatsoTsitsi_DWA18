@@ -1,6 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * AudioPlayer component renders an audio player to play podcast episodes.
+ * It allows users to play, pause, and seek through the audio track.
+ *
+ * @param {Object} props - The props for the component.
+ * @param {Object} props.episode - The episode object with title and audioUrl properties.
+ * @param {Function} props.onPlaybackChange - The callback function to handle changes in playback status.
+ */
 const AudioPlayer = ({ episode, onPlaybackChange }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -64,6 +72,7 @@ const AudioPlayer = ({ episode, onPlaybackChange }) => {
   );
 };
 
+// PropTypes for type checking and validation
 AudioPlayer.propTypes = {
   episode: PropTypes.shape({
     title: PropTypes.string.isRequired,
