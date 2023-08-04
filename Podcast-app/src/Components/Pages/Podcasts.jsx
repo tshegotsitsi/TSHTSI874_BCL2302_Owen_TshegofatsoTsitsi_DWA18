@@ -1,6 +1,6 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import 'bootstrap-icons/font/bootstrap-icons.css'; 
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Podcasts = () => {
   const [favorites, setFavorites] = useState(() => {
@@ -88,7 +88,7 @@ const Podcasts = () => {
         </div>
         <div className="col">
           <form className="d-flex mx-auto" onSubmit={handleSearch}>
-            <input className="form-control  rounded-pill border border-5 fs-2 ms-5" type="search" placeholder="Search" aria-label="Search"/>
+            <input className="form-control  rounded-pill border border-5 fs-2 ms-5" type="search" placeholder="Search" aria-label="Search" onChange={(e) => setSearchTerm(e.target.value)} value={searchTerm} />
             <button className="btn btn-outline-secondary ms-3" type="submit">
               Search
             </button>
