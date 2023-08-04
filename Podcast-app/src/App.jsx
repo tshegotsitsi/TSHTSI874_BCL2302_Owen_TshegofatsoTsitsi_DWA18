@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import supabase from '@supabase/supabase-js';
 
 // Import the page components
 import About from './Components/Pages/About';
@@ -6,7 +7,11 @@ import Home from './Components/Pages/Home';
 import Podcasts from './Components/Pages/Podcasts';
 import ShowDetails from './Components/Pages/ShowDetails';
 
-function App() {
+const App = () => {
+  // Initialize the Supabase client
+  const supabaseClient = supabase.createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+
+function App() 
   return (
     <BrowserRouter>
       {/* Header */}
