@@ -1,109 +1,108 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-// import supabase from '@supabase/supabase-js';
-
-// Import the page components
-
-import About from './Components/Pages/About';
-import Home from './Components/Pages/Home';
-import Podcasts from './Components/Pages/Podcasts';
-import ShowDetails from './Components/Pages/ShowDetails';
-
-// const App = () => {
-//   // Initialize the Supabase client
-//   const supabaseClient = supabase.createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+import { useEffect, useState } from 'react';
+import './index.css';
+import Navbar from './components/Navbar';
+import Home from './components/Home';
+import Favorite from './components/Favorite';
+import Preview from './components/Preview';
+import History from './components/History';
 
 function App() {
+  // State variables for managing the current page, selected podcast, and favorite episodes
+  const [currentPage, setCurrentPage] = useState(localStorage.getItem('currentPage') || 'home');
+  const [selectedPodcast, setSelectedPodcast] = useState(
+    JSON.parse(localStorage.getItem('selectedPodcast')) || null
+  );
+  const [favorites, setFavorites] = useState(
+    JSON.parse(localStorage.getItem('favoriteEpisodes')) || []
+  );
+
+  // Function to handle navigation to different pages
+  const handleNavigation = (page) => {
+    setCurrentPage(page);
+  };
+
+  // State variables for listening history and the last listened episode
+  const [listeningHistory, setListeningHistory] = useState([]);
+  const [setLastListened] = useState(null);
+
+  // Function to handle episode completion and update listening history
+  const handleEpisodeComplete = (episode) => {
+    if (!listeningHistory.some((item) => item.id === episode.id)) {
+      setListeningHistory((prevHistory) => [...prevHistory, episode]);
+    }
+  };
+
+  // Function to handle episode progress and set last listened episode
+  const handleEpisodeProgress = (episode, currentTime) => {
+    if (currentTime >= episode.duration - 10) {
+      setLastListened({
+        show: episode.show,
+        episode: episode.title,
+        progress: currentTime,
+      });
+    }
+  };
+
+  // Function to handle favorite button click and update favorites
+  const handleFavoriteClick = (episode) => {
+    if (!favorites.some((fav) => fav.id === episode.id)) {
+      setFavorites((prevFavorites) => [...prevFavorites, episode]);
+    }
+  };
+
+  // Save the current page and selected podcast in localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('currentPage', currentPage);
+    localStorage.setItem('selectedPodcast', JSON.stringify(selectedPodcast));
+  }, [currentPage, selectedPodcast]);
+
+  // Save the favorite episodes in localStorage whenever the favorites change
+  useEffect(() => {
+    localStorage.setItem('favoriteEpisodes', JSON.stringify(favorites));
+  }, [favorites]);
+
+  // Add event listener for the beforeunload event to reset the current page when leaving the app
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (currentPage !== 'home') {
+        setCurrentPage('home');
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [currentPage]);
+
+  // Render the App component with conditional rendering based on the current page
   return (
-    <BrowserRouter>
-      {/* Header */}
-      <header className="bg-dark">
-        <nav className="nav nav-pills flex-row P-2">
-          {/* Home Link */}
-          <Link to="/" className="flex-sm-fill text-sm-center nav-link text-light" aria-current="page">
-            Home
-          </Link>
-
-          {/* Genres Dropdown */}
-          <a className="flex-sm-fill text-sm-center nav-link dropdown-toggle text-light" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-            Genres
-          </a>
-          <ul className="dropdown-menu">
-            {/* List of Genre Links */}
-            <li>
-            <a className="" href="#">
-                Personal Growth
-              </a>
-            </li>
-            <li>
-              <a className="" href="#">
-                True Crime & Investigative Journalism
-              </a>
-            </li>
-            <li>
-              <a className="" href="#">
-                History
-              </a>
-            </li>
-            <li>
-              <a className="" href="#">
-                Comedy
-              </a>
-            </li>
-            <li>
-              <a className="" href="#">
-                Entertainment
-              </a>
-            </li>
-            <li>
-              <a className="" href="#">
-                Business
-              </a>
-            </li>
-            <li>
-              <a className="" href="#">
-                Fiction
-              </a>
-            </li>
-            <li>
-              <a className="" href="#">
-                News
-              </a>
-            </li>
-            <li>
-              <a className="" href="#">
-                Kids & Family
-              </a>
-            </li>
-          </ul>
-
-          {/* Podcasts Link */}
-          <Link to="/podcasts" className="flex-sm-fill text-sm-center nav-link text-light" href="#">
-            Podcasts
-          </Link>
-
-          {/* About Link */}
-          <Link to="/about" className="flex-sm-fill text-sm-center nav-link text-light" href="#">
-            About
-          </Link>
-        </nav>
-      </header>
-
-      {/* Routes */}
-      <Routes>
-        {/* Home Page */}
-        <Route path="/" element={<Home />} />
-
-        {/* About Page */}
-        <Route path="/about" element={<About />} />
-
-        {/* Podcasts Page */}
-        <Route path="/podcasts" element={<Podcasts />} />
-
-        {/* ShowDetails Page */}
-        <Route path="/podcasts/:id" element={<ShowDetails />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Navbar onNavigate={handleNavigation} />
+      <br />
+      <br />
+      {currentPage === 'home' && (
+        <Home onPodcastClick={setSelectedPodcast} selectedPodcast={selectedPodcast} />
+      )}
+      {currentPage === 'favorite' && (
+        <Favorite favorites={favorites} setFavorites={setFavorites} />
+      )}
+      {currentPage === 'preview' && (
+        <Preview
+          podcastId={selectedPodcast?.id}
+          onFavoriteClick={handleFavoriteClick}
+          onEpisodeComplete={handleEpisodeComplete}
+          onEpisodeProgress={handleEpisodeProgress}
+        />
+      )}
+      {currentPage === 'history' && <History />}
+    </>
   );
 }
 
 export default App;
+
+//Manages overall app functionality and navigation.
+//Uses the Navbar to help users navigate between different sections.
+//Provides a seamless experience for users to explore podcasts, manage favorites, and track listening history.
