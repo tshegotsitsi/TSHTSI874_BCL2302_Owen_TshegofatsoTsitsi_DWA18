@@ -103,9 +103,13 @@ return (
   
 }
 
-Authentication.prototype={
-    email : PropTypes.string,
-    setEmail :PropTypes.func,
-
-
-}
+Authentication.propTypes = {
+    email: PropTypes.string.isRequired,
+    setEmail: PropTypes.func.isRequired,
+    password: PropTypes.string.isRequired,
+    setPassword: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
+    setIsAuthenticated: PropTypes.func.isRequired,
+  };
+  
+  
